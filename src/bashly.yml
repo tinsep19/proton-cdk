@@ -1,0 +1,37 @@
+name: proton-cdk
+help: Proton Helper CLI
+version: 0.1.0
+
+commands:
+- name: service
+  help: create service template
+  commands:
+  - name: create
+    help: make directory structure
+    args:
+    - name: name
+  - name: build
+    help: make bundle.
+
+- name: environment
+  help: create environment template
+  alias: env
+  commands:
+  - name: init
+    help: |
+      make directory structure and templates.
+      1) Not specified --major
+      \$name/infrastructure
+
+      2) Specified --major 1
+      \$name/v1/infrastructure
+    args:
+    - name: name
+    flags:
+    - short: -m
+      long: --major
+      arg: major_version
+
+  - name: bundle
+    help: make bundle
+
