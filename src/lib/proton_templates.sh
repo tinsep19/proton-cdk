@@ -20,7 +20,37 @@ BASH
   chmod 755 cdk-to-proton.sh
 }
 
+create_template_registration () {
+  local target="$1"
+  cat << YAML > .template-registration
+compatible_environments:
+  - $target
+YAML
+}
+
+
 create_environment_schema () {
+  cat << YAML > schema.yaml
+schema:
+  format:
+    openapi: "3.0.0"
+  environment_input_type: "EnvironmentInputs"
+  types:
+    EnvironmentInputs:
+      type: object
+      description: "Input properties for my environment"
+      properties:
+        vpc_cidr_block:
+          type: string
+          title: "VPC CIDR block"
+          description: "VPC CIDR block, or default if left blank"
+          default: "10.0.0.0/16"
+      required:
+        - vpc_cidr_block
+YAML
+}
+
+create_service_schema () {
   cat << YAML > schema.yaml
 schema:
   format:
@@ -66,4 +96,31 @@ infrastructure:
           - npm run cdk -- destroy --force
 YAML
 }
+
+create_service_manifest_yaml() {
+cat << YAML > manifest.yaml
+infrastructure:
+  templates:
+    - rendering_engine: codebuild
+      settings:
+        image: aws/codebuild/amazonlinux2-x86_64-standard:5.0
+        runtimes:
+          nodejs: 18
+        provision:
+          # Run when create/update is triggered for environment or service
+          # Install dependencies
+          - npm install
+          - npm run cdk -- deploy
+          # Script to convert CDK outputs into outputs for Proton
+          - chmod +x ./cdk-to-proton.sh
+          - cat cdk-outputs.json | ./cdk-to-proton.sh > proton-outputs.json
+          # Notify AWS Proton of deployment status
+          - aws proton notify-resource-deployment-status-change --resource-arn $RESOURCE_ARN --outputs file://./proton-outputs.json
+        deprovision:
+          # Install dependencies and destroy resources
+          - npm install
+          - npm run cdk -- destroy --force
+YAML
+}
+
 
