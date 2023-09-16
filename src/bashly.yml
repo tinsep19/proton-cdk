@@ -3,6 +3,7 @@ help: Proton Helper CLI
 version: 0.1.0
 commands:
 - name: service
+  alias: srv
   help: create service template
   commands:
   - name: init

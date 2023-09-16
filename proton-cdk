@@ -65,6 +65,9 @@ proton_cdk_service_usage() {
 
   fi
 
+  printf "Alias: srv\n"
+  echo
+
   printf "%s\n" "Usage:"
   printf "  proton-cdk service COMMAND\n"
   printf "  proton-cdk service [COMMAND] --help | -h\n"
@@ -616,7 +619,7 @@ parse_requirements() {
   case $action in
     -*) ;;
 
-    service)
+    service | srv)
       action="service"
       shift
       proton_cdk_service_parse_requirements "$@"
