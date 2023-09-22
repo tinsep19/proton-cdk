@@ -89,7 +89,7 @@ infrastructure:
           - chmod +x ./cdk-to-proton.sh
           - cat cdk-outputs.json | ./cdk-to-proton.sh > proton-outputs.json
           # Notify AWS Proton of deployment status
-          - aws proton notify-resource-deployment-status-change --resource-arn $RESOURCE_ARN --outputs file://./proton-outputs.json
+          - aws proton notify-resource-deployment-status-change --resource-arn \$RESOURCE_ARN --outputs file://./proton-outputs.json
         deprovision:
           # Install dependencies and destroy resources
           - npm install
@@ -115,7 +115,7 @@ infrastructure:
           - chmod +x ./cdk-to-proton.sh
           - cat cdk-outputs.json | ./cdk-to-proton.sh > proton-outputs.json
           # Notify AWS Proton of deployment status
-          - aws proton notify-resource-deployment-status-change --resource-arn $RESOURCE_ARN --outputs file://./proton-outputs.json
+          - aws proton notify-resource-deployment-status-change --resource-arn \$RESOURCE_ARN --outputs file://./proton-outputs.json
         deprovision:
           # Install dependencies and destroy resources
           - npm install
