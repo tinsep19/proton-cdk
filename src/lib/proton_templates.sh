@@ -55,19 +55,19 @@ create_service_schema () {
 schema:
   format:
     openapi: "3.0.0"
-  environment_input_type: "EnvironmentInputs"
+  service_input_type: "ServiceInputs"
   types:
-    EnvironmentInputs:
+    ServiceInputs:
       type: object
-      description: "Input properties for my environment"
+      description: "Input properties for my service"
       properties:
-        vpc_cidr_block:
+        subnet_cidr_block:
           type: string
           title: "VPC CIDR block"
           description: "VPC CIDR block, or default if left blank"
-          default: "10.0.0.0/16"
+          default: "10.0.0.0/24"
       required:
-        - vpc_cidr_block
+        - subnet_cidr_block
 YAML
 }
 

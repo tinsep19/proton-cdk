@@ -1,6 +1,6 @@
 local name="${args[name]}"
 local major="${args[--major]}"
-local target="${args[--target]}"
+local target="${args[--target-environment]}"
 
 local tmpdir="$(mktemp -d)"
 mkdir -p "$tmpdir/$name"
