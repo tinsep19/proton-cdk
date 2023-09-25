@@ -116,7 +116,7 @@ proton_cdk_service_init_usage() {
 
     # :command.usage_flags
     # :flag.usage
-    printf "  %s\n" "--target, -t TARGET (required)"
+    printf "  %s\n" "--target-environment, -t TARGET (required)"
     printf "    target_name:version\n"
     echo
 
@@ -421,19 +421,19 @@ create_service_schema () {
 schema:
   format:
     openapi: "3.0.0"
-  environment_input_type: "EnvironmentInputs"
+  service_input_type: "ServiceInputs"
   types:
-    EnvironmentInputs:
+    ServiceInputs:
       type: object
-      description: "Input properties for my environment"
+      description: "Input properties for my service"
       properties:
-        vpc_cidr_block:
+        subnet_cidr_block:
           type: string
           title: "VPC CIDR block"
           description: "VPC CIDR block, or default if left blank"
-          default: "10.0.0.0/16"
+          default: "10.0.0.0/24"
       required:
-        - vpc_cidr_block
+        - subnet_cidr_block
 YAML
 }
 
@@ -496,7 +496,7 @@ proton_cdk_service_init_command() {
   # src/service_init_command.sh
   local name="${args[name]}"
   local major="${args[--major]}"
-  local target="${args[--target]}"
+  local target="${args[--target-environment]}"
 
   local tmpdir="$(mktemp -d)"
   mkdir -p "$tmpdir/$name"
@@ -769,16 +769,16 @@ proton_cdk_service_init_parse_requirements() {
     key="$1"
     case "$key" in
       # :flag.case
-      --target | -t)
+      --target-environment | -t)
 
         # :flag.case_arg
         if [[ -n ${2+x} ]]; then
 
-          args['--target']="$2"
+          args['--target-environment']="$2"
           shift
           shift
         else
-          printf "%s\n" "--target requires an argument: --target, -t TARGET" >&2
+          printf "%s\n" "--target-environment requires an argument: --target-environment, -t TARGET" >&2
           exit 1
         fi
         ;;
@@ -821,8 +821,8 @@ proton_cdk_service_init_parse_requirements() {
   done
 
   # :command.required_flags_filter
-  if [[ -z ${args['--target']+x} ]]; then
-    printf "missing required flag: --target, -t TARGET\n" >&2
+  if [[ -z ${args['--target-environment']+x} ]]; then
+    printf "missing required flag: --target-environment, -t TARGET\n" >&2
     exit 1
   fi
 
